@@ -1,0 +1,6 @@
+com/example/springdemo/bean/PersonBean.class
+com/example/springdemo/entity/Person.class
+com/example/springdemo/utility/Util.class
+com/example/springdemo/SpringDemoApplication.class
+com/example/springdemo/controller/DemoController.class
+com/example/springdemo/service/DemoService.class
