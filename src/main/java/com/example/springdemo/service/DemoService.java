@@ -1,11 +1,14 @@
 package com.example.springdemo.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.springframework.core.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +19,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.springdemo.entity.Person;
 
+import static com.example.springdemo.utility.Util.DATE_FORMAT_LONG;
 
 
 @Service
 public class DemoService {
 	
 	private static final Logger log = LoggerFactory.getLogger(DemoService.class);
+	private final AtomicLong counter = new AtomicLong();
 
 	private List<Person> persons = new ArrayList<>(Arrays.asList(
 		new Person(1, "John Wick", "jowick@gmail.com", Util.buildSystemDate(Util.DATE_FORMAT_LONG)),
@@ -46,8 +51,20 @@ public class DemoService {
 	
 	
 	public void addPerson(Person person) {
-		
-		persons.add(person);
+
+//		Person newPers = Person
+//		Person newPers =
+//		ResponseCaseDetail detailsResponse = ResponseCaseDetail.builder()
+//		Person newPerson = Person.
+//
+//
+//
+//		newPerson.setId(counter.get());
+//		newPerson.setName(person.getName());
+//		newPerson.setEmail(person.getEmail());
+//		newPerson.setDataInsert(Util.buildSystemDate(DATE_FORMAT_LONG));
+//
+//		persons.add(newPerson);
 	}
 	
 	public void updatePerson(int id, Person person) throws JsonProcessingException {
