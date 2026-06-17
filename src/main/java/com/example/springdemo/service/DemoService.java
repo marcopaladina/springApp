@@ -13,7 +13,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import com.example.springdemo.utility.Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.springdemo.entity.Person;
 
 
@@ -24,10 +23,10 @@ public class DemoService {
 	private static final Logger log = LoggerFactory.getLogger(DemoService.class);
 
 	private List<Person> persons = new ArrayList<>(Arrays.asList(
-		new Person(1, "John Wick", "jowick@gmail.com", Util.buildSystemDate(Util.DATE_FORMAT_LONG)),
-		new Person(2, "Bill Muller", "bill.mu@gmail.com", Util.buildSystemDate(Util.DATE_FORMAT_LONG)),
-		new Person(3, "John Smith", "john.sm@gmail.com", Util.buildSystemDate(Util.DATE_FORMAT_LONG)),
-		new Person(4, "Bob Geldof", "bobge@email.com", Util.buildSystemDate(Util.DATE_FORMAT_LONG))
+		new Person(1, "John Wick", "jowick@gmail.com", Util.defaultStartDate(Util.DATE_FORMAT_LONG), null),
+		new Person(2, "Bill Muller", "bill.mu@gmail.com", Util.defaultStartDate(Util.DATE_FORMAT_LONG), null),
+		new Person(3, "John Smith", "john.sm@gmail.com", Util.defaultStartDate(Util.DATE_FORMAT_LONG), null),
+		new Person(4, "Bob Geldof", "bobge@email.com", Util.defaultStartDate(Util.DATE_FORMAT_LONG), null)
 	));
 	
 	public List<Person> getPersons() {
@@ -46,27 +45,63 @@ public class DemoService {
 	
 	
 	public void addPerson(Person person) {
-		
-		persons.add(person);
+		Person newPerson = Person.builder()
+				.id(findLastId() + 1)
+				.name(person.getName())
+				.email(person.getEmail())
+				.dataInsert(Util.getTodayFormatted())
+				.dataUpdate(null)
+				.build();
+		persons.add(newPerson);
 	}
-	
+
+    private long findLastId() {
+        return persons.get(persons.size() - 1).getId();
+    }
+
+//	@Query("SELECT COALESCE(MAX(u.id), 0) FROM User u")
+//	Long findLastId();
+
 	public void updatePerson(int id, Person person) throws JsonProcessingException {
-		
-		ObjectMapper obj = new ObjectMapper();
-		String risultato = obj.writeValueAsString(person);
-		log.info("Mappa Oggetto: " + risultato);
-		
-		for(int i=0; i<persons.size(); i++) {
+
+		for (int i = 0; i < persons.size(); i++) {
 			Person p = persons.get(i);
-			if(p.getId() == id) {
-				persons.set(i, person);
+			if (p.getId() == id) {
+
+				p.setId(id);
+				p.setName(person.getName());
+				p.setEmail(person.getEmail());
+				p.setDataUpdate(Util.getTodayFormatted());
+				// aggiorna solo i campi necessari
+				return;
 			}
 		}
 	}
-	
+
+
+//	public void updatePerson(int id, Person person) throws JsonProcessingException {
+//
+//		ObjectMapper obj = new ObjectMapper();
+//		String risultato = obj.writeValueAsString(person);
+//		log.info("Mappa Oggetto: " + risultato);
+//
+//		for (int i = 0; i < persons.size(); i++) {
+//			Person p = persons.get(i);
+//			if (p.getId() == id) {
+//
+//				// Mantieni l'id originale
+//				person.setId(id);
+//
+//				persons.set(i, person);
+//				return;
+//			}
+//		}
+//	}
+
+
 	public void deletePerson(int id) {
-		
-		persons.remove(id);
+
+		persons.remove(getPerson(id));
 	}
 	
 	

@@ -1,7 +1,6 @@
 package com.example.springdemo.bean;
 
 import java.util.UUID;
-
 import com.example.springdemo.entity.Person;
 import lombok.AllArgsConstructor;
 import lombok.Data;

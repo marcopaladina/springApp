@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.springdemo.bean.PersonBean;
 import com.example.springdemo.entity.Person;
 import com.example.springdemo.service.DemoService;
@@ -137,7 +135,7 @@ public class DemoController {
 	}
 
 
-	@PutMapping("/person{id}")
+	@PutMapping("/person")
 	public void updatePerson(@RequestParam("id") int id, @RequestBody Person person) throws JsonProcessingException {
 		
 		log.info("updatePerson(@RequestParam(\"id\") int id, @RequestBody Person person), {}, {}", id, person);
@@ -145,7 +143,9 @@ public class DemoController {
 		service.updatePerson(id, person);
 	}
 
-
+	/*b
+	 * @PathVariable identifica.
+	 */
 	@DeleteMapping("/person/{id}")
 	public void deletePerson(@PathVariable int id) {
 		
@@ -154,8 +154,10 @@ public class DemoController {
 		service.deletePerson(id);
 	}
 
-	
-	@GetMapping("/test{name}")
+	/*
+	 * @RequestParam filtra o ricerca.
+	 */
+	@GetMapping("/test")
 	@ResponseBody
 	String hello(@RequestParam String name, @RequestHeader int number) {
 		

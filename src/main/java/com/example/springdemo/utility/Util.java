@@ -2,9 +2,10 @@ package com.example.springdemo.utility;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
-
 import org.springframework.stereotype.Component;
 
 
@@ -103,5 +104,16 @@ public class Util {
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFormatSimple);
 		
 		return sdf.format(now);
+	}
+
+	public static String defaultStartDate(String dateFormatSimple) {
+
+		String date = "15-04-2026 09:31:10";
+		return date;
+	}
+
+	public static String getTodayFormatted() {
+		LocalDateTime now = LocalDateTime.now();
+		return now.format(DateTimeFormatter.ofPattern(DATE_FORMAT_LONG));
 	}
 }
