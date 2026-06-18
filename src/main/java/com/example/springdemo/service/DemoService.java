@@ -39,12 +39,16 @@ public class DemoService {
 	}
 
 	public Person getPerson(Long id) {
+		log.info("Ricerca persona id= {}", id);
 		return personRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(
-						"Person con id " + id + " non trovata"));
+				.orElseThrow(() -> {
+					log.warn("Persona non trovata id= {}", id);
+					return new ResourceNotFoundException("Person con id " + id + " non trovata");
+				});
 	}
 
 	public Person addPerson(Person person) {
+		log.info("Crea persona person= {}", person);
 		person.setDataInsert(Util.getTodayFormatted());
 		return personRepository.save(person);
 	}
@@ -54,11 +58,13 @@ public class DemoService {
 
 		ObjectMapper obj = new ObjectMapper();
 		String risultato = obj.writeValueAsString(person);
-		log.info("Mappa Oggetto: {}", risultato);
+		log.info("Mappa Oggetto= {}", risultato);
 
 		Person existingPerson = personRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(
-						"Person con id " + id + " non trovata"));
+				.orElseThrow(() -> {
+					log.warn("Persona non trovata id= {}", id);
+					return new ResourceNotFoundException("Person con id " + id + " non trovata");
+				});
 		existingPerson.setName(person.getName());
 		existingPerson.setEmail(person.getEmail());
 		existingPerson.setDataModify(Util.getTodayFormatted());
@@ -67,12 +73,11 @@ public class DemoService {
 	}
 
 	public void deletePerson(Long id) {
-
+		log.warn("Persona trovata id= {}", id);
 		if (!personRepository.existsById(id)) {
 			throw new ResourceNotFoundException(
 					"Person con id " + id + " non trovata");
 		}
-
 		personRepository.deleteById(id);
 	}
 
@@ -82,7 +87,6 @@ public class DemoService {
 		String filePath = "test.txt";
 
 		Resource res = new ClassPathResource(filePath);
-
 		log.info(res.getFilename());
 
 		results.add(res.getDescription());

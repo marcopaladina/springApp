@@ -58,7 +58,7 @@ public class DemoController {
 		
 		final String template = "[%d], Ciao ";
 		
-		log.info("counter: " + counter.get());
+		log.info("defaultMethod - counter {}", counter.get());
 		String result = String.format(template, counter.incrementAndGet()).concat("Ciccio");
 		
 		return result;
@@ -73,7 +73,7 @@ public class DemoController {
     	
     	testo = appName.replace("%1", testo);
 		
-		log.info("testo: " + testo);
+		log.info("secondMethod - testo: {}", testo);
 
 		return Arrays.asList(WELCOME, "Hello", testo, "Arrivederci Roma", HOME + "page", element);
 	}
@@ -84,7 +84,7 @@ public class DemoController {
 		
 		ObjectMapper obj = new ObjectMapper();
 		String risultato = obj.writeValueAsString(service.getPersons());
-		log.info("findPersons(): " + risultato);
+		log.info("findPersons(): {}", risultato);
 
 		return new ResponseEntity<>(service.getPersons(), HttpStatus.OK);
 	}
@@ -95,7 +95,7 @@ public class DemoController {
 		
 		ObjectMapper obj = new ObjectMapper();
 		String risultato = obj.writeValueAsString(service.getPersons());
-		log.info("findPersons(): " + risultato);
+		log.info("findListOfPerson(): {}", risultato);
 		
 		PersonBean personBean = null;
 		ArrayList<PersonBean> responseListOfPerson = new ArrayList<>();
@@ -114,7 +114,7 @@ public class DemoController {
 	@GetMapping("/person/{id}")
 	public Person findPerson(@PathVariable Long id) {
 		
-		log.info("findPerson(@PathVariable int id), {}", id );
+		log.info("findPerson(@PathVariable int id)= {}", id);
 
 		return service.getPerson(id);
 	}
@@ -132,7 +132,7 @@ public class DemoController {
 	@PostMapping("/person")
 	public void addPerson(@RequestBody Person person) {
 		
-		log.info("addPerson(@RequestBody Person person), {}", person);
+		log.info("addPerson(@RequestBody Person person)= {}", person);
 
 		service.addPerson(person);
 	}
@@ -149,7 +149,7 @@ public class DemoController {
 	@DeleteMapping("/person/{id}")
 	public void deletePerson(@PathVariable Long id) {
 		
-		log.info("deletePerson(@PathVariable int id), {}", id);
+		log.info("deletePerson(@PathVariable int id)= {}", id);
 
 		service.deletePerson(id);
 	}
@@ -172,7 +172,7 @@ public class DemoController {
 	@PostMapping("/persons")
 	public ResponseEntity<List<Person>> addPersons(@RequestBody List<Person> persons) {
 
-		log.info("addPerson(@RequestBody List<Person> persons), {}", persons);
+		log.info("addPerson(@RequestBody List<Person> persons)= {}", persons);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(service.addPersons(persons));

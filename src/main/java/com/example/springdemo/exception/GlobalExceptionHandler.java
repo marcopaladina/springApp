@@ -22,6 +22,11 @@ public class GlobalExceptionHandler {
             ResourceNotFoundException ex,
             HttpServletRequest request) {
 
+        log.error("Errore inatteso endpoint={}",
+                request.getRequestURI(),
+                ex
+        );
+
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
@@ -56,7 +61,10 @@ public class GlobalExceptionHandler {
             Exception ex,
             HttpServletRequest request) {
 
-        log.error("Errore inatteso", ex);
+        log.warn("handleGenericException: {} - {}",
+                request.getRequestURI(),
+                ex.getMessage()
+        );
 
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
