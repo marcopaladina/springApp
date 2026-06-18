@@ -11,11 +11,7 @@
 
         <encoder>
             <pattern>
-                %d{dd-MM-yyyy HH:mm:ss.SSS}
-                [%thread]
-                %-5level
-                %logger{36}
-                - %msg%n
+                %d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
             </pattern>
         </encoder>
 
@@ -41,11 +37,7 @@
 
         <encoder>
             <pattern>
-                %d{MM-dd-yyyy HH:mm:ss.SSS}
-                [%thread]
-                %-5level
-                %logger{36}
-                - %msg%n
+                %d{MM-dd-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
             </pattern>
         </encoder>
 
@@ -76,11 +68,7 @@
 
         <encoder>
             <pattern>
-                %d{dd-MM-yyyy HH:mm:ss.SSS}
-                [%thread]
-                %-5level
-                %logger{36}
-                - %msg%n
+                %d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
             </pattern>
         </encoder>
 
