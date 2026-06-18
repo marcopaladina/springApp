@@ -2,6 +2,8 @@ package com.example.springdemo.utility;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -103,5 +105,11 @@ public class Util {
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFormatSimple);
 		
 		return sdf.format(now);
+	}
+
+
+	public static String getTodayFormatted() {
+		LocalDateTime today = LocalDateTime.now();
+		return today.format(DateTimeFormatter.ofPattern(DATE_FORMAT_LONG));
 	}
 }

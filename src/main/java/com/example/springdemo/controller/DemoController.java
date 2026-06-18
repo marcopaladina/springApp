@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.example.springdemo.bean.PersonBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.example.springdemo.bean.PersonBean;
 import com.example.springdemo.entity.Person;
 import com.example.springdemo.service.DemoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -41,9 +40,7 @@ public class DemoController {
 	private static final Logger log = LoggerFactory.getLogger(DemoController.class);
 	private static final String HOME = "Home ";
 	private final AtomicLong counter = new AtomicLong();
-	
-	@Autowired
-	private DemoService service;
+	private final DemoService service;
 
 	@Value("${business.service.element}")
 	String element;
@@ -51,8 +48,12 @@ public class DemoController {
     @Value("${spring.application.name}")
     String appName;
 
+    public DemoController(DemoService service) {
+        this.service = service;
+    }
 
-	@GetMapping("")
+
+    @GetMapping("")
 	public String defaultMethod() {
 		
 		final String template = "[%d], Ciao ";
@@ -90,7 +91,7 @@ public class DemoController {
 
 
 	@GetMapping("/listOfPerson")
-	public ResponseEntity<List<PersonBean>> findListOfPerson() throws JsonProcessingException {
+	public ResponseEntity<ArrayList<PersonBean>> findListOfPerson() throws JsonProcessingException {
 		
 		ObjectMapper obj = new ObjectMapper();
 		String risultato = obj.writeValueAsString(service.getPersons());
@@ -111,7 +112,7 @@ public class DemoController {
 	
 	
 	@GetMapping("/person/{id}")
-	public Person findPerson(@PathVariable int id) {
+	public Person findPerson(@PathVariable Long id) {
 		
 		log.info("findPerson(@PathVariable int id), {}", id );
 
@@ -137,9 +138,8 @@ public class DemoController {
 	}
 
 
-	@PutMapping("/person{id}")
-	public void updatePerson(@RequestParam("id") int id, @RequestBody Person person) throws JsonProcessingException {
-		
+	@PutMapping("/person/{id}")
+	public void updatePerson(@PathVariable Long id, @RequestBody Person person) throws JsonProcessingException {
 		log.info("updatePerson(@RequestParam(\"id\") int id, @RequestBody Person person), {}, {}", id, person);
 
 		service.updatePerson(id, person);
@@ -147,7 +147,7 @@ public class DemoController {
 
 
 	@DeleteMapping("/person/{id}")
-	public void deletePerson(@PathVariable int id) {
+	public void deletePerson(@PathVariable Long id) {
 		
 		log.info("deletePerson(@PathVariable int id), {}", id);
 
@@ -155,7 +155,7 @@ public class DemoController {
 	}
 
 	
-	@GetMapping("/test{name}")
+	@GetMapping("/test")
 	@ResponseBody
 	String hello(@RequestParam String name, @RequestHeader int number) {
 		
@@ -166,6 +166,16 @@ public class DemoController {
 		log.error("Hello {}", name, number);
 		
 		return "Hello: " + name + " - " + number;
+	}
+
+
+	@PostMapping("/persons")
+	public ResponseEntity<List<Person>> addPersons(@RequestBody List<Person> persons) {
+
+		log.info("addPerson(@RequestBody List<Person> persons), {}", persons);
+
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(service.addPersons(persons));
 	}
 
 }
