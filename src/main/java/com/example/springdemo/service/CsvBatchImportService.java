@@ -2,32 +2,28 @@ package com.example.springdemo.service;
 
 import com.example.springdemo.entity.Department;
 import com.example.springdemo.entity.Employee;
+import com.example.springdemo.entity.Person;
 import com.example.springdemo.repository.DepartmentRepository;
 import com.example.springdemo.repository.EmployeeRepository;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.springdemo.utility.Util.*;
 
 
 @Service
 public class CsvBatchImportService {
 
-
-
         private final EmployeeRepository employeeRepository;
         private final DepartmentRepository departmentRepository;
-
-        private static final int BATCH_SIZE = 1000;
-        private static final DateTimeFormatter DATE_DDMMYYYY =
-                DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     public CsvBatchImportService(EmployeeRepository employeeRepository,
             DepartmentRepository departmentRepository) {
@@ -122,25 +118,20 @@ public class CsvBatchImportService {
         }
     }
 
-    // -------------------------
-    //  METODI DI PARSING SICURO
-    // -------------------------
-
-    private Integer parseIntSafe(String s) {
-        if (s == null) return null;
-        s = s.trim().replaceAll("[^0-9-]", "");
-        return s.isEmpty() ? null : Integer.parseInt(s);
+    public List<Person> getPersons() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private Double parseDoubleSafe(String s) {
-        if (s == null) return null;
-        s = s.trim().replaceAll("[^0-9.-]", "");
-        return s.isEmpty() ? null : Double.parseDouble(s);
+    public Person getPerson(Long id) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private LocalDate parseDateSafe(String s) {
-        if (s == null) return null;
-        s = s.trim().replace("'", ""); // rimuove apici
-        return LocalDate.parse(s, DATE_DDMMYYYY);
+    public void addPerson(Person person) {
+    }
+
+    public void updatePerson(Long id, Person person) {
+    }
+
+    public void deletePerson(Long id) {
     }
 }
