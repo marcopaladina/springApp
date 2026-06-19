@@ -143,6 +143,11 @@ public class DemoService {
 		return personRepository.saveAll(persons);
 	}
 
+	public long findLastId() {
+		log.info("Finding last id from DB: {}", personRepository.count());
+		return personRepository.findLastId();
+	}
+
 //	private List<Person> persons = new ArrayList<>(Arrays.asList(
 //		new Person(1, "John Wick", "jowick@gmail.com", Util.buildSystemDate(Util.DATE_FORMAT_LONG), null),
 //		new Person(2, "Bill Muller", "bill.mu@gmail.com", Util.buildSystemDate(Util.DATE_FORMAT_LONG), null),

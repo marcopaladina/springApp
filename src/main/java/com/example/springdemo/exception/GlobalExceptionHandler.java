@@ -39,23 +39,6 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
-//    @ExceptionHandler(BusinessException.class)
-//    public ResponseEntity<ErrorResponse> handleBusinessException(
-//            BusinessException ex,
-//            HttpServletRequest request) {
-//
-//        ErrorResponse response = ErrorResponse.builder()
-//                .timestamp(LocalDateTime.now())
-//                .status(HttpStatus.BAD_REQUEST.value())
-//                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-//                .message(ex.getMessage())
-//                .path(request.getRequestURI())
-//                .build();
-//
-//        return ResponseEntity.badRequest()
-//                .body(response);
-//    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(
             Exception ex,
