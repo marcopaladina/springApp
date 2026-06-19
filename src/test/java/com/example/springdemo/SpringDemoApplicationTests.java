@@ -16,7 +16,7 @@ class SpringDemoApplicationTests {
 
     @Test
     void contextLoads() {
-        assertNotNull(service, "Il contesto Spring non ha caricato MyService");
+        assertNotNull(service, "Il contesto Spring non ha caricato service");
     }
 
     @Test
