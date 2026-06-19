@@ -15,13 +15,13 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-class DemoServiceTest {
+class PersonServiceTest {
 
     @Mock
     private PersonRepository personRepository;
 
     @InjectMocks
-    private DemoService demoService;
+    private PersonService service;
 
     @Test
     void shouldReturnAllPersons() {
@@ -34,7 +34,7 @@ class DemoServiceTest {
         when(personRepository.findAll())
                 .thenReturn(persons);
 
-        List<Person> result = demoService.getPersons();
+        List<Person> result = service.getPersons();
 
         assertEquals(2, result.size());
 
@@ -60,7 +60,7 @@ class DemoServiceTest {
                 .thenReturn(persons);
 
         List<Person> result =
-                demoService.addPersons(persons);
+                service.addPersons(persons);
 
         assertEquals(2, result.size());
 
@@ -71,7 +71,7 @@ class DemoServiceTest {
     void shouldDeletePerson() {
         when(personRepository.existsById(1L))
                 .thenReturn(true);
-        demoService.deletePerson(1L);
+        service.deletePerson(1L);
         verify(personRepository)
                 .deleteById(1L);
     }

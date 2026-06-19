@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.example.springdemo.bean.PersonBean;
+import com.example.springdemo.service.PersonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.springdemo.entity.Person;
-import com.example.springdemo.service.DemoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,13 +33,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api/v1")
-public class DemoController {
+public class PersonController {
 	
 	private static final String WELCOME = "Welcome";
-	private static final Logger log = LoggerFactory.getLogger(DemoController.class);
+	private static final Logger log = LoggerFactory.getLogger(PersonController.class);
 	private static final String HOME = "Home ";
 	private final AtomicLong counter = new AtomicLong();
-	private final DemoService service;
+	private final PersonService service;
 
 	@Value("${business.service.element}")
 	String element;
@@ -47,7 +47,7 @@ public class DemoController {
     @Value("${spring.application.name}")
     String appName;
 
-    public DemoController(DemoService service) {
+    public PersonController(PersonService service) {
         this.service = service;
     }
 

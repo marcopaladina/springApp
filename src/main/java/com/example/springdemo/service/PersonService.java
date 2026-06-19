@@ -1,13 +1,10 @@
 package com.example.springdemo.service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.concurrent.atomic.AtomicLong;
 
 import com.example.springdemo.exception.ResourceNotFoundException;
 import com.example.springdemo.repository.PersonRepository;
@@ -24,13 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-public class DemoService {
+public class PersonService {
 	
-	private static final Logger log = LoggerFactory.getLogger(DemoService.class);
+	private static final Logger log = LoggerFactory.getLogger(PersonService.class);
 	private final PersonRepository personRepository;
 //	private final AtomicLong counter = new AtomicLong();
 
-    public DemoService(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository) {
         this.personRepository = personRepository;
     }
 

@@ -1,7 +1,7 @@
 package com.example.springdemo.controller;
 
 import com.example.springdemo.entity.Person;
-import com.example.springdemo.service.DemoService;
+import com.example.springdemo.service.PersonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +16,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-@WebMvcTest(DemoController.class)
-class DemoControllerTest {
+@WebMvcTest(PersonController.class)
+class PersonControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private DemoService demoService;
+    private PersonService PersonService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -45,14 +45,14 @@ class DemoControllerTest {
                         .build()
         );
 
-        when(demoService.getPersons()).thenReturn(persons);
+        when(PersonService.getPersons()).thenReturn(persons);
 
         mockMvc.perform(get("/api/v1/persons"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Mario"))
                 .andExpect(jsonPath("$[1].name").value("Luigi"));
 
-        verify(demoService, times(2)).getPersons();
+        verify(PersonService, times(2)).getPersons();
     }
 
     @Test
@@ -64,7 +64,7 @@ class DemoControllerTest {
                 .email("mario@test.it")
                 .build();
 
-        when(demoService.getPerson(1L))
+        when(PersonService.getPerson(1L))
                 .thenReturn(person);
 
         mockMvc.perform(get("/api/v1/person/1"))
@@ -85,7 +85,7 @@ class DemoControllerTest {
                         .content(objectMapper.writeValueAsString(person)))
                 .andExpect(status().isOk());
 
-        verify(demoService).addPerson(any(Person.class));
+        verify(PersonService).addPerson(any(Person.class));
     }
 
     @Test
@@ -108,7 +108,7 @@ class DemoControllerTest {
                         .content(objectMapper.writeValueAsString(persons)))
                 .andExpect(status().isCreated());
 
-        verify(demoService).addPersons(anyList());
+        verify(PersonService).addPersons(anyList());
     }
 
     @Test
@@ -117,6 +117,6 @@ class DemoControllerTest {
         mockMvc.perform(delete("/api/v1/person/1"))
                 .andExpect(status().isOk());
 
-        verify(demoService).deletePerson(1L);
+        verify(PersonService).deletePerson(1L);
     }
 }

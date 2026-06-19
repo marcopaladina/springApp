@@ -1,6 +1,6 @@
 package com.example.springdemo;
 
-import com.example.springdemo.service.DemoService;
+import com.example.springdemo.service.PersonService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class SpringDemoApplicationTests {
 
     @Autowired
-    private DemoService service;
+    private PersonService service;
 
     @Test
     void contextLoads() {
