@@ -37,7 +37,6 @@ class PersonControllerTest {
                         .name("Mario")
                         .email("mario@test.it")
                         .build(),
-
                 Person.builder()
                         .id(2L)
                         .name("Luigi")
@@ -51,7 +50,6 @@ class PersonControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Mario"))
                 .andExpect(jsonPath("$[1].name").value("Luigi"));
-
         verify(PersonService, times(2)).getPersons();
     }
 
@@ -63,10 +61,8 @@ class PersonControllerTest {
                 .name("Mario")
                 .email("mario@test.it")
                 .build();
-
         when(PersonService.getPerson(1L))
                 .thenReturn(person);
-
         mockMvc.perform(get("/api/v1/person/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Mario"));
@@ -79,12 +75,10 @@ class PersonControllerTest {
                 .name("Mario")
                 .email("mario@test.it")
                 .build();
-
         mockMvc.perform(post("/api/v1/person")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(person)))
                 .andExpect(status().isOk());
-
         verify(PersonService).addPerson(any(Person.class));
     }
 
@@ -96,7 +90,6 @@ class PersonControllerTest {
                         .name("Mario")
                         .email("mario@test.it")
                         .build(),
-
                 Person.builder()
                         .name("Luigi")
                         .email("luigi@test.it")
@@ -107,7 +100,6 @@ class PersonControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(persons)))
                 .andExpect(status().isCreated());
-
         verify(PersonService).addPersons(anyList());
     }
 
@@ -116,7 +108,6 @@ class PersonControllerTest {
 
         mockMvc.perform(delete("/api/v1/person/1"))
                 .andExpect(status().isOk());
-
         verify(PersonService).deletePerson(1L);
     }
 }

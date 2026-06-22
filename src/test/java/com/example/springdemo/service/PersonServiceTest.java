@@ -25,7 +25,6 @@ class PersonServiceTest {
 
     @Test
     void shouldReturnAllPersons() {
-
         List<Person> persons = List.of(
                 Person.builder().id(1L).name("Mario").build(),
                 Person.builder().id(2L).name("Luigi").build()
@@ -33,11 +32,9 @@ class PersonServiceTest {
 
         when(personRepository.findAll())
                 .thenReturn(persons);
-
         List<Person> result = service.getPersons();
 
         assertEquals(2, result.size());
-
         verify(personRepository).findAll();
     }
 
