@@ -1,17 +1,11 @@
 package com.example.springdemo.service;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import org.springframework.core.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import com.example.springdemo.utility.Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.springdemo.entity.Person;
 
 
@@ -29,10 +24,10 @@ public class DemoService {
 	private static final Logger log = LoggerFactory.getLogger(DemoService.class);
 
 	private List<Person> persons = new ArrayList<>(Arrays.asList(
-		new Person(1, "John Wick", "jowick@gmail.com", Util.defaultStartDate(Util.DATE_FORMAT_LONG), null),
-		new Person(2, "Bill Muller", "bill.mu@gmail.com", Util.defaultStartDate(Util.DATE_FORMAT_LONG), null),
-		new Person(3, "John Smith", "john.sm@gmail.com", Util.defaultStartDate(Util.DATE_FORMAT_LONG), null),
-		new Person(4, "Bob Geldof", "bobge@email.com", Util.defaultStartDate(Util.DATE_FORMAT_LONG), null)
+		new Person(1, "John Wick", "jowick@gmail.com", Util.buildSystemDate(Util.DATE_FORMAT_LONG)),
+		new Person(2, "Bill Muller", "bill.mu@gmail.com", Util.buildSystemDate(Util.DATE_FORMAT_LONG)),
+		new Person(3, "John Smith", "john.sm@gmail.com", Util.buildSystemDate(Util.DATE_FORMAT_LONG)),
+		new Person(4, "Bob Geldof", "bobge@email.com", Util.buildSystemDate(Util.DATE_FORMAT_LONG))
 	));
 	
 	public List<Person> getPersons() {
@@ -51,63 +46,27 @@ public class DemoService {
 	
 	
 	public void addPerson(Person person) {
-		Person newPerson = Person.builder()
-				.id(findLastId() + 1)
-				.name(person.getName())
-				.email(person.getEmail())
-				.dataInsert(Util.getTodayFormatted())
-				.dataUpdate(null)
-				.build();
-		persons.add(newPerson);
+		
+		persons.add(person);
 	}
-
-    private long findLastId() {
-        return persons.get(persons.size() - 1).getId();
-    }
-
-//	@Query("SELECT COALESCE(MAX(u.id), 0) FROM User u")
-//	Long findLastId();
-
+	
 	public void updatePerson(int id, Person person) throws JsonProcessingException {
-
-		for (int i = 0; i < persons.size(); i++) {
+		
+		ObjectMapper obj = new ObjectMapper();
+		String risultato = obj.writeValueAsString(person);
+		log.info("Mappa Oggetto: " + risultato);
+		
+		for(int i=0; i<persons.size(); i++) {
 			Person p = persons.get(i);
-			if (p.getId() == id) {
-
-				p.setId(id);
-				p.setName(person.getName());
-				p.setEmail(person.getEmail());
-				p.setDataUpdate(Util.getTodayFormatted());
-				// aggiorna solo i campi necessari
-				return;
+			if(p.getId() == id) {
+				persons.set(i, person);
 			}
 		}
 	}
-
-
-//	public void updatePerson(int id, Person person) throws JsonProcessingException {
-//
-//		ObjectMapper obj = new ObjectMapper();
-//		String risultato = obj.writeValueAsString(person);
-//		log.info("Mappa Oggetto: " + risultato);
-//
-//		for (int i = 0; i < persons.size(); i++) {
-//			Person p = persons.get(i);
-//			if (p.getId() == id) {
-//
-//				// Mantieni l'id originale
-//				person.setId(id);
-//
-//				persons.set(i, person);
-//				return;
-//			}
-//		}
-//	}
-
-
+	
 	public void deletePerson(int id) {
-
-		persons.remove(getPerson(id));
+		
+		persons.remove(id);
 	}
 	
 	
@@ -133,86 +92,4 @@ public class DemoService {
 		return results;
 	}
 
-	public byte[] createPdf() {
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-			Document document = new Document(PageSize.A4, 40, 40, 60, 60);
-			PdfWriter writer = PdfWriter.getInstance(document, baos);
-
-			document.open();
-
-			PdfContentByte canvas = writer.getDirectContent();
-
-			// -----------------------------
-			// HEADER
-			// -----------------------------
-			canvas.beginText();
-			canvas.setFontAndSize(BaseFont.createFont(), 14);
-			canvas.setTextMatrix(40, 820);
-			canvas.showText("Report PDF - Header");
-			canvas.endText();
-
-			// Linea sotto l’header
-			canvas.moveTo(40, 810);
-			canvas.lineTo(555, 810);
-			canvas.stroke();
-
-			// -----------------------------
-			// FOOTER
-			// -----------------------------
-			canvas.beginText();
-			canvas.setFontAndSize(BaseFont.createFont(), 10);
-			canvas.setTextMatrix(40, 30);
-			canvas.showText("Footer - Pagina 1");
-			canvas.endText();
-
-			// Linea sopra il footer
-			canvas.moveTo(40, 50);
-			canvas.lineTo(555, 50);
-			canvas.stroke();
-
-			// -----------------------------
-			// TABELLA CENTRALE (4 colonne)
-			// -----------------------------
-			PdfPTable table = new PdfPTable(4); // <-- ora 4 colonne
-			table.setWidthPercentage(100);
-			table.setSpacingBefore(80);
-
-			// Header tabella
-			table.addCell("ID");
-			table.addCell("Nome");
-			table.addCell("Email");
-			table.addCell("Data");
-
-			// Righe dati
-			table.addCell(String.valueOf(persons.get(0).getId()));
-			table.addCell(persons.get(0).getName());
-			table.addCell(persons.get(0).getEmail());
-			table.addCell(persons.get(0).getDataInsert());
-
-			table.addCell(String.valueOf(persons.get(1).getId()));
-			table.addCell(persons.get(1).getName());
-			table.addCell(persons.get(1).getEmail());
-			table.addCell(persons.get(1).getDataInsert());
-
-			table.addCell(String.valueOf(persons.get(2).getId()));
-			table.addCell(persons.get(2).getName());
-			table.addCell(persons.get(2).getEmail());
-			table.addCell(persons.get(2).getDataInsert());
-
-			document.add(table);
-
-			// -----------------------------
-			// PARAGRAFO FINALE
-			// -----------------------------
-			document.add(new Paragraph("\n\nDocumento generato con le persone di default."));
-
-			document.close();
-			return baos.toByteArray();
-
-		} catch (Exception e) {
-			throw new RuntimeException("Errore durante la creazione del PDF", e);
-		}
-	}
 }
