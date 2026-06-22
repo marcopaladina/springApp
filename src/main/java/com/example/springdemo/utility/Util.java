@@ -2,10 +2,12 @@ package com.example.springdemo.utility;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+
 import org.springframework.stereotype.Component;
 
 
@@ -17,11 +19,35 @@ public class Util {
 	public static final String DATE_FORMAT_LONG = "dd-MM-yyyy HH:mm:ss";
 	public static final String DATETIME_SEPARATOR = "T";
 	public static final String BLANK_SEPARATOR = " ";
-	
+	public static final int BATCH_SIZE = 1000;
+	public static final DateTimeFormatter DATE_DDMMYYYY =
+			DateTimeFormatter.ofPattern(DATE_FORMAT_SHORT);
 	private Util() {
 		
 	}
-	
+
+	// -------------------------
+	//  METODI DI PARSING SICURO
+	// -------------------------
+	public static Integer parseIntSafe(String s) {
+		if (s == null) return null;
+		s = s.trim().replaceAll("[^0-9-]", "");
+		return s.isEmpty() ? null : Integer.parseInt(s);
+	}
+
+	public static Double parseDoubleSafe(String s) {
+		if (s == null) return null;
+		s = s.trim().replaceAll("[^0-9.-]", "");
+		return s.isEmpty() ? null : Double.parseDouble(s);
+	}
+
+	public static LocalDate parseDateSafe(String s) {
+		if (s == null) return null;
+		s = s.trim().replace("'", ""); // rimuove apici
+		return LocalDate.parse(s, DATE_DDMMYYYY);
+	}
+
+
 	/**
 	 * Checks if is today.
 	 * 
@@ -106,14 +132,9 @@ public class Util {
 		return sdf.format(now);
 	}
 
-	public static String defaultStartDate(String dateFormatSimple) {
-
-		String date = "15-04-2026 09:31:10";
-		return date;
-	}
 
 	public static String getTodayFormatted() {
-		LocalDateTime now = LocalDateTime.now();
-		return now.format(DateTimeFormatter.ofPattern(DATE_FORMAT_LONG));
+		LocalDateTime today = LocalDateTime.now();
+		return today.format(DateTimeFormatter.ofPattern(DATE_FORMAT_LONG));
 	}
 }
