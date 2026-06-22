@@ -10,7 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +30,7 @@ import com.example.springdemo.entity.Person;
 import com.example.springdemo.service.DemoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.bind.annotation.*;
 
 
 
@@ -39,6 +42,16 @@ public class DemoController {
 	private static final Logger log = LoggerFactory.getLogger(DemoController.class);
 	private static final String HOME = "Home ";
 	private final AtomicLong counter = new AtomicLong();
+
+
+	@PostMapping(" ")
+	public ResponseEntity<byte[]> generatePdf() {
+		byte[] pdfContent = service.createPdf();
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=documento.pdf")
+				.contentType(MediaType.APPLICATION_PDF)
+				.body(pdfContent);
+	}
 	
 	@Autowired
 	private DemoService service;
@@ -169,5 +182,10 @@ public class DemoController {
 		
 		return "Hello: " + name + " - " + number;
 	}
+
+//	@GetMapping("/crea-PDF")
+//	public String getPDF(@RequestParam String name) {
+//		return service.creaPdf(name);
+//	}
 
 }

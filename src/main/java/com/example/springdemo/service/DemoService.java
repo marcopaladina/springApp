@@ -1,11 +1,17 @@
 package com.example.springdemo.service;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.io.BufferedReader;
-import java.io.FileReader;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import org.springframework.core.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,4 +133,86 @@ public class DemoService {
 		return results;
 	}
 
+	public byte[] createPdf() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+			Document document = new Document(PageSize.A4, 40, 40, 60, 60);
+			PdfWriter writer = PdfWriter.getInstance(document, baos);
+
+			document.open();
+
+			PdfContentByte canvas = writer.getDirectContent();
+
+			// -----------------------------
+			// HEADER
+			// -----------------------------
+			canvas.beginText();
+			canvas.setFontAndSize(BaseFont.createFont(), 14);
+			canvas.setTextMatrix(40, 820);
+			canvas.showText("Report PDF - Header");
+			canvas.endText();
+
+			// Linea sotto l’header
+			canvas.moveTo(40, 810);
+			canvas.lineTo(555, 810);
+			canvas.stroke();
+
+			// -----------------------------
+			// FOOTER
+			// -----------------------------
+			canvas.beginText();
+			canvas.setFontAndSize(BaseFont.createFont(), 10);
+			canvas.setTextMatrix(40, 30);
+			canvas.showText("Footer - Pagina 1");
+			canvas.endText();
+
+			// Linea sopra il footer
+			canvas.moveTo(40, 50);
+			canvas.lineTo(555, 50);
+			canvas.stroke();
+
+			// -----------------------------
+			// TABELLA CENTRALE (4 colonne)
+			// -----------------------------
+			PdfPTable table = new PdfPTable(4); // <-- ora 4 colonne
+			table.setWidthPercentage(100);
+			table.setSpacingBefore(80);
+
+			// Header tabella
+			table.addCell("ID");
+			table.addCell("Nome");
+			table.addCell("Email");
+			table.addCell("Data");
+
+			// Righe dati
+			table.addCell(String.valueOf(persons.get(0).getId()));
+			table.addCell(persons.get(0).getName());
+			table.addCell(persons.get(0).getEmail());
+			table.addCell(persons.get(0).getDataInsert());
+
+			table.addCell(String.valueOf(persons.get(1).getId()));
+			table.addCell(persons.get(1).getName());
+			table.addCell(persons.get(1).getEmail());
+			table.addCell(persons.get(1).getDataInsert());
+
+			table.addCell(String.valueOf(persons.get(2).getId()));
+			table.addCell(persons.get(2).getName());
+			table.addCell(persons.get(2).getEmail());
+			table.addCell(persons.get(2).getDataInsert());
+
+			document.add(table);
+
+			// -----------------------------
+			// PARAGRAFO FINALE
+			// -----------------------------
+			document.add(new Paragraph("\n\nDocumento generato con le persone di default."));
+
+			document.close();
+			return baos.toByteArray();
+
+		} catch (Exception e) {
+			throw new RuntimeException("Errore durante la creazione del PDF", e);
+		}
+	}
 }
