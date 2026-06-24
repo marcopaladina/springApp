@@ -1,5 +1,6 @@
 package com.example.springdemo.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,14 @@ import java.io.FileReader;
 
 import com.example.springdemo.exception.ResourceNotFoundException;
 import com.example.springdemo.repository.PersonRepository;
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.core.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +73,7 @@ public class PersonService {
 				});
 		existingPerson.setName(person.getName());
 		existingPerson.setEmail(person.getEmail());
-		existingPerson.setDataModify(Util.getTodayFormatted());
+		existingPerson.setDataUpdate(Util.getTodayFormatted());
 
 		return personRepository.save(existingPerson);
 	}
@@ -147,6 +156,88 @@ public class PersonService {
 		return personRepository.findLastId();
 	}
 
+	public byte[] createPdf() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+			Document document = new Document(PageSize.A4, 40, 40, 60, 60);
+			PdfWriter writer = PdfWriter.getInstance(document, baos);
+
+			document.open();
+
+			PdfContentByte canvas = writer.getDirectContent();
+
+			// -----------------------------
+			// HEADER
+			// -----------------------------
+			canvas.beginText();
+			canvas.setFontAndSize(BaseFont.createFont(), 14);
+			canvas.setTextMatrix(40, 820);
+			canvas.showText("Report PDF - Header");
+			canvas.endText();
+
+			// Linea sotto l’header
+			canvas.moveTo(40, 810);
+			canvas.lineTo(555, 810);
+			canvas.stroke();
+
+			// -----------------------------
+			// FOOTER
+			// -----------------------------
+			canvas.beginText();
+			canvas.setFontAndSize(BaseFont.createFont(), 10);
+			canvas.setTextMatrix(40, 30);
+			canvas.showText("Footer - Pagina 1");
+			canvas.endText();
+
+			// Linea sopra il footer
+			canvas.moveTo(40, 50);
+			canvas.lineTo(555, 50);
+			canvas.stroke();
+
+			// -----------------------------
+			// TABELLA CENTRALE (4 colonne)
+			// -----------------------------
+			PdfPTable table = new PdfPTable(4); // <-- ora 4 colonne
+			table.setWidthPercentage(100);
+			table.setSpacingBefore(80);
+
+			// Header tabella
+			table.addCell("ID");
+			table.addCell("Nome");
+			table.addCell("Valore");
+			table.addCell("Descrizione");
+
+			// Righe dati
+			table.addCell("1");
+			table.addCell("Marco");
+			table.addCell("100");
+			table.addCell("Prima riga");
+
+			table.addCell("2");
+			table.addCell("Spring Boot");
+			table.addCell("200");
+			table.addCell("Framework Java");
+
+			table.addCell("3");
+			table.addCell("PDF Report");
+			table.addCell("300");
+			table.addCell("Generazione PDF");
+
+			document.add(table);
+
+			// -----------------------------
+			// PARAGRAFO FINALE
+			// -----------------------------
+			document.add(new Paragraph("\n\nDocumento generato con header, footer e tabella a 4 colonne."));
+
+			document.close();
+			return baos.toByteArray();
+
+		} catch (Exception e) {
+			throw new RuntimeException("Errore durante la creazione del PDF", e);
+		}
+	}
 
 
 //	private List<Person> persons = new ArrayList<>(Arrays.asList(
