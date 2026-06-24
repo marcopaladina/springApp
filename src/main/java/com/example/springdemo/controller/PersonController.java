@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.springdemo.bean.PersonBean;
 import com.example.springdemo.entity.Person;
-import com.example.springdemo.service.DemoService;
+import com.example.springdemo.service.PersonService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
@@ -36,10 +36,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
-public class DemoController {
+public class PersonController {
 	
 	private static final String WELCOME = "Welcome";
-	private static final Logger log = LoggerFactory.getLogger(DemoController.class);
+	private static final Logger log = LoggerFactory.getLogger(PersonController.class);
 	private static final String HOME = "Home ";
 	private final AtomicLong counter = new AtomicLong();
 
@@ -54,7 +54,7 @@ public class DemoController {
 	}
 	
 	@Autowired
-	private DemoService service;
+	private PersonService service;
 
 	@Value("${business.service.element}")
 	String element;
@@ -122,7 +122,7 @@ public class DemoController {
 	
 	
 	@GetMapping("/person/{id}")
-	public Person findPerson(@PathVariable int id) {
+	public Person findPerson(@PathVariable Long id) {
 		
 		log.info("findPerson(@PathVariable int id), {}", id );
 
@@ -149,7 +149,7 @@ public class DemoController {
 
 
 	@PutMapping("/person")
-	public void updatePerson(@RequestParam("id") int id, @RequestBody Person person) throws JsonProcessingException {
+	public void updatePerson(@RequestParam("id") Long id, @RequestBody Person person) throws JsonProcessingException {
 		
 		log.info("updatePerson(@RequestParam(\"id\") int id, @RequestBody Person person), {}, {}", id, person);
 
@@ -160,7 +160,7 @@ public class DemoController {
 	 * @PathVariable identifica.
 	 */
 	@DeleteMapping("/person/{id}")
-	public void deletePerson(@PathVariable int id) {
+	public void deletePerson(@PathVariable Long id) {
 		
 		log.info("deletePerson(@PathVariable int id), {}", id);
 
