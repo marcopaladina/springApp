@@ -23,7 +23,7 @@ class PersonControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private PersonService PersonService;
+    private PersonService service;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -44,13 +44,13 @@ class PersonControllerTest {
                         .build()
         );
 
-        when(PersonService.getPersons()).thenReturn(persons);
+        when(service.getPersons()).thenReturn(persons);
 
         mockMvc.perform(get("/api/v1/persons"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Mario"))
                 .andExpect(jsonPath("$[1].name").value("Luigi"));
-        verify(PersonService, times(2)).getPersons();
+        verify(service, times(2)).getPersons();
     }
 
     @Test
@@ -61,7 +61,7 @@ class PersonControllerTest {
                 .name("Mario")
                 .email("mario@test.it")
                 .build();
-        when(PersonService.getPerson(1L))
+        when(service.getPerson(1L))
                 .thenReturn(person);
         mockMvc.perform(get("/api/v1/person/1"))
                 .andExpect(status().isOk())
@@ -79,7 +79,7 @@ class PersonControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(person)))
                 .andExpect(status().isOk());
-        verify(PersonService).addPerson(any(Person.class));
+        verify(service).addPerson(any(Person.class));
     }
 
     @Test
@@ -100,7 +100,7 @@ class PersonControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(persons)))
                 .andExpect(status().isCreated());
-        verify(PersonService).addPersons(anyList());
+        verify(service).addPersons(anyList());
     }
 
     @Test
@@ -108,6 +108,6 @@ class PersonControllerTest {
 
         mockMvc.perform(delete("/api/v1/person/1"))
                 .andExpect(status().isOk());
-        verify(PersonService).deletePerson(1L);
+        verify(service).deletePerson(1L);
     }
 }

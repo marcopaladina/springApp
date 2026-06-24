@@ -42,9 +42,26 @@ public class PersonController {
 	private static final Logger log = LoggerFactory.getLogger(PersonController.class);
 	private static final String HOME = "Home ";
 	private final AtomicLong counter = new AtomicLong();
+	private final PersonService service;
+
+	@Value("${business.service.element}")
+	String element;
+
+	@Value("${spring.application.name}")
+	String appName;
+
+    public PersonController(PersonService service) {
+        this.service = service;
+    }
 
 
-	@PostMapping(" ")
+    @PostMapping("/persons")
+	public ResponseEntity<Void> addPersons(@RequestBody List<Person> persons) {
+		service.addPersons(persons);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+
+	@PostMapping("/generate-pdf")
 	public ResponseEntity<byte[]> generatePdf() {
 		byte[] pdfContent = service.createPdf();
 		return ResponseEntity.ok()
@@ -52,15 +69,6 @@ public class PersonController {
 				.contentType(MediaType.APPLICATION_PDF)
 				.body(pdfContent);
 	}
-	
-	@Autowired
-	private PersonService service;
-
-	@Value("${business.service.element}")
-	String element;
-
-    @Value("${spring.application.name}")
-    String appName;
 
 
 	@GetMapping("")
@@ -148,12 +156,12 @@ public class PersonController {
 	}
 
 
-	@PutMapping("/person")
-	public void updatePerson(@RequestParam("id") Long id, @RequestBody Person person) throws JsonProcessingException {
+	@PutMapping("/person/{id}")
+	public void updatePerson(@PathVariable Long id, @RequestBody Person updParson) throws JsonProcessingException {
 		
-		log.info("updatePerson(@RequestParam(\"id\") int id, @RequestBody Person person), {}, {}", id, person);
+		log.info("updatePerson(@RequestParam(\"id\") int id, @RequestBody Person person), {}, {}", id, updParson);
 
-		service.updatePerson(id, person);
+		service.updatePerson(id, updParson);
 	}
 
 	/*b
