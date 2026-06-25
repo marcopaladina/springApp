@@ -16,7 +16,6 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.core.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,12 +86,23 @@ public class PersonService {
 		personRepository.deleteById(id);
 	}
 
-	public List<String> scanFile() throws IOException {
 
+	public List<String> scanFile(String fileName) throws IOException {
 		List<String> results = new ArrayList<>();
-		String filePath = "test.txt";
-
+		if (fileName == null || fileName.isEmpty()) {
+			log.info("fileName null");
+			throw new ResourceNotFoundException("fileName null");
+		}
+		String filePath = fileName;
 		Resource res = new ClassPathResource(filePath);
+
+		if (!res.exists()) {
+			log.info("File non trovato: {}", filePath);
+			throw new ResourceNotFoundException(
+					"File non trovato nella root del classpath: " + filePath);
+		}
+
+		log.info("File trovato: {}", res.getFilename());
 		log.info(res.getFilename());
 
 		results.add(res.getDescription());

@@ -139,11 +139,11 @@ public class PersonController {
 
 
 	@GetMapping("/scan-file")
-	public List<String> scannerFile() throws IOException {
+	public List<String> scannerFile(@RequestParam String fileName) throws IOException {
 		
 		log.info("scannerFile()");
 
-		return service.scanFile();
+		return service.scanFile(fileName);
 	}
 
 
