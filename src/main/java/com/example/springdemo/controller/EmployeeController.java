@@ -1,21 +1,16 @@
 package com.example.springdemo.controller;
 
-import com.example.springdemo.bean.PersonBean;
 import com.example.springdemo.entity.Employee;
-import com.example.springdemo.entity.Person;
 import com.example.springdemo.service.EmployeeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
 
 
 @RestController
@@ -30,11 +25,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Employee>> findEmployees() throws JsonProcessingException {
-
-        ObjectMapper obj = new ObjectMapper();
-        String risultato = obj.writeValueAsString(service.getEmployee());
-        log.info("findEmployees(): {}", risultato);
+    public ResponseEntity<List<Employee>> findEmployees() {
+        log.info("findEmployees -> Vuoto?: {}", service.getEmployee(). isEmpty());
 
         return new ResponseEntity<>(service.getEmployee(), HttpStatus.OK);
     }

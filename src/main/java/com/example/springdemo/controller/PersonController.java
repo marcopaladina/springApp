@@ -120,7 +120,7 @@ public class PersonController {
 			personBean = new PersonBean();
 			personBean.setId(UUID.randomUUID());
 			personBean.setPerson(elemento);
-			
+
 			responseListOfPerson.add(personBean);
 		}
 		return new ResponseEntity<>(responseListOfPerson, HttpStatus.OK);

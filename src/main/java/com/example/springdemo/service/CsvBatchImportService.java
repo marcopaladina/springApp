@@ -2,11 +2,8 @@ package com.example.springdemo.service;
 
 import com.example.springdemo.entity.Department;
 import com.example.springdemo.entity.Employee;
-import com.example.springdemo.entity.Person;
 import com.example.springdemo.repository.DepartmentRepository;
 import com.example.springdemo.repository.EmployeeRepository;
-import com.example.springdemo.utility.Util;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
@@ -24,8 +21,8 @@ import static com.example.springdemo.utility.Util.parseIntSafe;
 @Service
 public class CsvBatchImportService {
 
-        private final EmployeeRepository employeeRepository;
-        private final DepartmentRepository departmentRepository;
+    private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
 
     public CsvBatchImportService(EmployeeRepository employeeRepository,
             DepartmentRepository departmentRepository) {
@@ -71,7 +68,9 @@ public class CsvBatchImportService {
                 }
 
                 // Parsing sicuro
-                Integer empno = parseIntSafe(fields[0]);
+                Long empno = fields[0] != null && fields[0].trim().matches("-?\\d+")
+                        ? Long.valueOf(fields[0].trim())
+                        : null;
                 String ename = fields[1];
                 String job = fields[2];
                 Integer mgr = parseIntSafe(fields[3]);
@@ -82,14 +81,13 @@ public class CsvBatchImportService {
                 String deptname = fields[8];
                 String deptdesc = fields[9];
 
-
                 // Recupera o crea il dipartimento
                 Department dept = departmentRepository.findById(deptno)
                         .orElseGet(() -> {
                             Department d = new Department();
                             d.setDeptno(deptno);
                             d.setDname(deptname);
-                            d.setLoc(deptdesc);
+                            d.setLocation(deptdesc);
                             return departmentRepository.save(d);
                         });
 
@@ -99,7 +97,7 @@ public class CsvBatchImportService {
                 emp.setEname(ename);
                 emp.setJob(job);
                 emp.setMgr(mgr);
-//                emp.setHiredate(Util.buildSystemDate(String.valueOf(hiredate)));
+                emp.setHiredate(hiredate);
                 emp.setSal(sal);
                 emp.setComm(comm);
                 emp.setDepartment(dept);
@@ -118,22 +116,5 @@ public class CsvBatchImportService {
                 employeeRepository.saveAll(batch);
             }
         }
-    }
-
-    public List<Person> getPersons() {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    public Person getPerson(Long id) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    public void addPerson(Person person) {
-    }
-
-    public void updatePerson(Long id, Person person) {
-    }
-
-    public void deletePerson(Long id) {
     }
 }

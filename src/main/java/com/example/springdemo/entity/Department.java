@@ -1,5 +1,6 @@
 package com.example.springdemo.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,15 +18,16 @@ import java.util.List;
 public class Department {
 
     @Id
-    @Column(name = "deptno")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer deptno;
 
     @Column(name = "dname")
     private String dname;
 
-    @Column(name = "loc")
-    private String loc;
+    @Column(name = "location")
+    private String location;
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Employee> employees;
 }

@@ -1,5 +1,7 @@
 package com.example.springdemo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,8 +19,8 @@ import java.time.LocalDate;
 public class Employee {
 
     @Id
-    @Column(name = "empno")
-    private Integer empno;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long empno;
 
     @Column(name = "ename")
     private String ename;
@@ -30,6 +32,7 @@ public class Employee {
     private Integer mgr;
 
     @Column(name = "hiredate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate hiredate;
 
     @Column(name = "sal")
@@ -38,7 +41,8 @@ public class Employee {
     @Column(name = "comm")
     private Double comm;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deptno")
+    @JsonBackReference
     private Department department;
 }
