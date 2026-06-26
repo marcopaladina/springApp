@@ -5,6 +5,7 @@ import com.example.springdemo.entity.Employee;
 import com.example.springdemo.entity.Person;
 import com.example.springdemo.repository.DepartmentRepository;
 import com.example.springdemo.repository.EmployeeRepository;
+import com.example.springdemo.utility.Util;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.springdemo.utility.Util.*;
+import static com.example.springdemo.utility.Util.parseIntSafe;
 
 
 @Service
@@ -97,7 +99,7 @@ public class CsvBatchImportService {
                 emp.setEname(ename);
                 emp.setJob(job);
                 emp.setMgr(mgr);
-                emp.setHiredate(hiredate);
+//                emp.setHiredate(Util.buildSystemDate(String.valueOf(hiredate)));
                 emp.setSal(sal);
                 emp.setComm(comm);
                 emp.setDepartment(dept);
