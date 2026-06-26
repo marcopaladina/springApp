@@ -53,22 +53,20 @@ public class EmployeeController {
 //    }
 
 
-//    @GetMapping("/person/{id}")
-//    public Person findPerson(@PathVariable Long id) {
-//
-//        log.info("findPerson(@PathVariable int id)= {}", id);
-//
-//        return service.getPerson(id);
-//    }
+    @GetMapping("/employee/{id}")
+    public Employee findEmployee(@PathVariable Long id) {
+
+        log.info("findEmployee(@PathVariable int id)= {}", id);
+
+        return service.getEmployee(id);
+    }
 
 
-//    @PostMapping("/person")
-//    public void addPerson(@RequestBody Person person) {
-//
-//        log.info("addPerson(@RequestBody Person person)= {}", person);
-//
-//        service.addPerson(person);
-//    }
+    @PostMapping("/")
+    public void addEmployee(@RequestBody Employee employee) {
+        log.info("addEmployee(@RequestBody Employee employee)= {}", employee);
+        service.addEmployee(employee);
+    }
 
 
 //    @PutMapping("/person/{id}")
