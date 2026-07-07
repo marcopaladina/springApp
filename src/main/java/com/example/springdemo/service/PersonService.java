@@ -3,6 +3,7 @@ package com.example.springdemo.service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,10 +11,13 @@ import java.io.FileReader;
 import com.example.springdemo.exception.ResourceNotFoundException;
 import com.example.springdemo.repository.PersonRepository;
 import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import org.springframework.core.io.Resource;
@@ -90,8 +94,8 @@ public class PersonService {
 	public List<String> scanFile(String fileName) throws IOException {
 		List<String> results = new ArrayList<>();
 		if (fileName == null || fileName.isEmpty()) {
-			log.info("fileName null");
-			throw new ResourceNotFoundException("fileName null");
+			log.info("fileName: null");
+			throw new ResourceNotFoundException("fileName: null");
 		}
 		String filePath = fileName;
 		Resource res = new ClassPathResource(filePath);
@@ -111,40 +115,20 @@ public class PersonService {
 
 		try (BufferedReader buffer =
 					 new BufferedReader(new FileReader(res.getFile()))) {
-
 			results.add("Start File ---> [");
 
 			while (buffer.ready()) {
 				results.add(buffer.readLine());
 			}
-
 			results.add("]");
 		}
-
 		return results;
 	}
+
 
 	public static String say() {
 		return "Working...";
 	}
-
-//	public List<Person> addPersons(List<Person> persons) {
-//		Person person = new Person();
-//		for (Person p : persons) {
-//			person.setName(p.getName());
-//			person.setEmail(p.getEmail());
-//			person.setDataInsert(Util.getTodayFormatted());
-//			persons.add(person);
-//		}
-//		return personRepository.saveAll(persons);
-//	}
-
-//	public List<Person> addPersons(List<Person> persons) {
-//		persons.forEach(person -> {
-//			person.setDataInsert(Util.getTodayFormatted());
-//		});
-//		return personRepository.saveAll(persons);
-//	}
 
 
 	/*
@@ -166,7 +150,115 @@ public class PersonService {
 		return personRepository.findLastId();
 	}
 
+//	public byte[] createPdf() {
+//		try {
+//			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//
+//			Document document = new Document(PageSize.A4, 40, 40, 60, 60);
+//			PdfWriter writer = PdfWriter.getInstance(document, baos);
+//
+//			document.open();
+//
+//			PdfContentByte canvas = writer.getDirectContent();
+//
+//			// -----------------------------
+//			// HEADER
+//			// -----------------------------
+//			canvas.beginText();
+//			canvas.setFontAndSize(BaseFont.createFont(), 14);
+//			canvas.setTextMatrix(40, 820);
+//			canvas.showText("Report PDF - Header");
+//			canvas.endText();
+//
+//			// Linea sotto l’header
+//			canvas.moveTo(40, 810);
+//			canvas.lineTo(555, 810);
+//			canvas.stroke();
+//
+//			// -----------------------------
+//			// FOOTER
+//			// -----------------------------
+//			canvas.beginText();
+//			canvas.setFontAndSize(BaseFont.createFont(), 10);
+//			canvas.setTextMatrix(40, 30);
+//			canvas.showText("Footer - Pagina 1");
+//			canvas.endText();
+//
+//			// Linea sopra il footer
+//			canvas.moveTo(40, 50);
+//			canvas.lineTo(555, 50);
+//			canvas.stroke();
+//
+//			// -----------------------------
+//			// TABELLA CENTRALE (4 colonne)
+//			// -----------------------------
+//			PdfPTable table = new PdfPTable(4); // <-- ora 4 colonne
+//			table.setWidthPercentage(100);
+//			table.setSpacingBefore(80);
+//
+//			// Header tabella
+//			table.addCell("ID");
+//			table.addCell("Nome");
+//			table.addCell("Valore");
+//			table.addCell("Descrizione");
+//
+//			// Righe dati
+//			table.addCell("1");
+//			table.addCell("Marco");
+//			table.addCell("100");
+//			table.addCell("Prima riga");
+//
+//			table.addCell("2");
+//			table.addCell("Spring Boot");
+//			table.addCell("200");
+//			table.addCell("Framework Java");
+//
+//			table.addCell("3");
+//			table.addCell("PDF Report");
+//			table.addCell("300");
+//			table.addCell("Generazione PDF");
+//
+//			document.add(table);
+//
+//			// -----------------------------
+//			// PARAGRAFO FINALE
+//			// -----------------------------
+//			document.add(new Paragraph("\n\nDocumento generato con header, footer e tabella a 4 colonne."));
+//
+//			document.close();
+//			return baos.toByteArray();
+//
+//		} catch (Exception e) {
+//			throw new RuntimeException("Errore durante la creazione del PDF", e);
+//		}
+//	}
+
 	public byte[] createPdf() {
+		String headerTitle = "Report Clienti";
+		String footerTitle = "Documento generato automaticamente";
+		String finalparagraph = "Fine del report";
+
+		List<String> columns = Arrays.asList(
+				"ID",
+				"Nome",
+				"Valore",
+				"Descrizione");
+
+		List<List<String>> rows = List.of(
+				List.of("1", "Marco", "100", "Prima riga"),
+				List.of("2", "Spring Boot", "200", "Framework Java"),
+				List.of("3", "PDF Report", "300", "Generazione PDF")
+		);
+
+
+		return scriviPdfCablato(headerTitle, footerTitle, columns, rows, finalparagraph);
+	}
+
+
+
+	public byte[] scriviPdfCablato(String headerTitle, String footerText, List<String> columns,
+			List<List<String>> rows, String finalParagraph) {
+
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -177,71 +269,56 @@ public class PersonService {
 
 			PdfContentByte canvas = writer.getDirectContent();
 
-			// -----------------------------
+			BaseFont font = BaseFont.createFont();
+
 			// HEADER
-			// -----------------------------
 			canvas.beginText();
-			canvas.setFontAndSize(BaseFont.createFont(), 14);
+			canvas.setFontAndSize(font, 14);
 			canvas.setTextMatrix(40, 820);
-			canvas.showText("Report PDF - Header");
+			canvas.showText(headerTitle);
 			canvas.endText();
 
-			// Linea sotto l’header
 			canvas.moveTo(40, 810);
 			canvas.lineTo(555, 810);
 			canvas.stroke();
 
-			// -----------------------------
 			// FOOTER
-			// -----------------------------
 			canvas.beginText();
-			canvas.setFontAndSize(BaseFont.createFont(), 10);
+			canvas.setFontAndSize(font, 10);
 			canvas.setTextMatrix(40, 30);
-			canvas.showText("Footer - Pagina 1");
+			canvas.showText(footerText);
 			canvas.endText();
 
-			// Linea sopra il footer
 			canvas.moveTo(40, 50);
 			canvas.lineTo(555, 50);
 			canvas.stroke();
 
-			// -----------------------------
-			// TABELLA CENTRALE (4 colonne)
-			// -----------------------------
-			PdfPTable table = new PdfPTable(4); // <-- ora 4 colonne
+			// TABELLA
+			PdfPTable table = new PdfPTable(columns.size());
 			table.setWidthPercentage(100);
 			table.setSpacingBefore(80);
 
-			// Header tabella
-			table.addCell("ID");
-			table.addCell("Nome");
-			table.addCell("Valore");
-			table.addCell("Descrizione");
+			// Header colonne
+			for (String column : columns) {
+				PdfPCell cell = new PdfPCell(new Phrase(column));
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(cell);
+			}
 
-			// Righe dati
-			table.addCell("1");
-			table.addCell("Marco");
-			table.addCell("100");
-			table.addCell("Prima riga");
-
-			table.addCell("2");
-			table.addCell("Spring Boot");
-			table.addCell("200");
-			table.addCell("Framework Java");
-
-			table.addCell("3");
-			table.addCell("PDF Report");
-			table.addCell("300");
-			table.addCell("Generazione PDF");
+			// Dati
+			for (List<String> row : rows) {
+				for (String value : row) {
+					table.addCell(value != null ? value : "");
+				}
+			}
 
 			document.add(table);
 
-			// -----------------------------
-			// PARAGRAFO FINALE
-			// -----------------------------
-			document.add(new Paragraph("\n\nDocumento generato con header, footer e tabella a 4 colonne."));
+			// Paragrafo finale
+			document.add(new Paragraph("\n\n" + finalParagraph));
 
 			document.close();
+
 			return baos.toByteArray();
 
 		} catch (Exception e) {
