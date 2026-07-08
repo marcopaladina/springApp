@@ -3,17 +3,20 @@ package com.example.springdemo.service;
 
 import com.example.springdemo.entity.Employee;
 import com.example.springdemo.entity.Person;
+import com.example.springdemo.exception.ResourceNotFoundException;
 import com.example.springdemo.repository.EmployeeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
 public class EmployeeService {
 
+    private static final Logger log = LoggerFactory.getLogger(PersonService.class);
     private final EmployeeRepository repo;
 
     public EmployeeService(EmployeeRepository repo) {
@@ -21,32 +24,40 @@ public class EmployeeService {
     }
 
 
-
     public Page<Employee> getEmployee(Pageable pageable) {
+
         return repo.findAll(pageable);
     }
 
-    public List<Person> getPersons() {
+
+
+    public Person getPerson(Long id) {
 
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public Optional<Employee> getEmployee(Long id) {
-
-        return repo.findById(id);
-    }
-
     public void addPerson(Person person) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public void updatePerson(Long id, Person person) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public void deletePerson(Long id) {
+    public void deletePerson(long id) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    public void addEmployee(Employee employee) {
+        repo.save(employee);
+    }
 
-    public Employee addEmployee(Employee employee) {
-        return repo.save(employee);
+    public Employee getEmployeeById(long id) {
+        log.info("Ricerca persona id= {}", id);
+        return repo.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Persona non trovata id= {}", id);
+                    return new ResourceNotFoundException("Person con id " + id + " non trovata");
+                });
     }
 }

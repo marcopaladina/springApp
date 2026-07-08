@@ -15,7 +15,6 @@ out/
 
 ### Maven ###
 target/
-**/target/
 !.mvn/wrapper/maven-wrapper.jar
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.properties
@@ -46,9 +45,6 @@ Desktop.ini
 *.jar
 *.war
 *.ear
-
-# Classi compilate presenti in moduli/sottocartelle
-**/*.class
 
 ### IDE vari ###
 # VSCode

@@ -1,6 +1,5 @@
 package com.example.springdemo.controller;
 
-import com.example.springdemo.bean.EmployeeBean;
 import com.example.springdemo.entity.Employee;
 import com.example.springdemo.service.EmployeeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,11 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+
 
 
 @RestController
@@ -30,55 +26,48 @@ public class EmployeeController {
         this.service = service;
     }
 
-    @GetMapping("/employee")
-    public Page<Employee> findEmployees(Pageable pageable) {
+    @GetMapping("/")
+    public ResponseEntity<Page<Employee>> findEmployees(Pageable pageable) {
         log.info("Find employees with page: {}", pageable);
         log.info("findEmployees -> Vuoto?: {}", service.getEmployee(pageable).isEmpty());
 
-        return service.getEmployee(pageable);
+        return new ResponseEntity<>(service.getEmployee(pageable), HttpStatus.OK);
     }
 
 
-
-//    @GetMapping("/listOfEmployee")
-//    public ResponseEntity<Page<EmployeeBean>> findListOfEmployee(Pageable pageable)
-//            throws JsonProcessingException {
+//    @GetMapping("/listOfPerson")
+//    public ResponseEntity<ArrayList<PersonBean>> findListOfPerson() throws JsonProcessingException {
 //
-//        Page<EmployeeBean> responsePage = service.getEmployee(pageable);
+//        ObjectMapper obj = new ObjectMapper();
+//        String risultato = obj.writeValueAsString(service.getPersons());
+//        log.info("findListOfPerson(): {}", risultato);
 //
-//        for (EmployeeBean employee : responsePage.getContent()) {
-//            employee.setId(UUID.randomUUID());
-//            employee.setEmployee(employee);
+//        PersonBean personBean = null;
+//        ArrayList<PersonBean> responseListOfPerson = new ArrayList<>();
+//        List<Person> lista = service.getPersons();
+//        for(Person elemento:lista) {
+//            personBean = new PersonBean();
+//            personBean.setId(UUID.randomUUID());
+//            personBean.setPerson(elemento);
+//
+//            responseListOfPerson.add(personBean);
 //        }
-//                .map(employee -> {
-//                    EmployeeBean employeeBean = new EmployeeBean();
-//                    employeeBean.setId(UUID.randomUUID());
-//                    employeeBean.setEmployee(employee);
-//                    return employeeBean;
-//                });
-
-//        log.info("findListOfEmployee(): {}",
-//                new ObjectMapper().writeValueAsString(responsePage));
-//
-//        return ResponseEntity.ok(responsePage);
+//        return new ResponseEntity<>(responseListOfPerson, HttpStatus.OK);
 //    }
 
 
-
     @GetMapping("/employee/{id}")
-    public Optional<Employee> findEmployee(@PathVariable Long id) {
+    public Employee findEmployee(@PathVariable Long id) {
 
         log.info("findEmployee(@PathVariable int id)= {}", id);
 
-        return service.getEmployee(id);
+        return service.getEmployeeById(id);
     }
 
 
-    @PostMapping("/employee")
+    @PostMapping("/")
     public void addEmployee(@RequestBody Employee employee) {
-
         log.info("addEmployee(@RequestBody Employee employee)= {}", employee);
-
         service.addEmployee(employee);
     }
 
