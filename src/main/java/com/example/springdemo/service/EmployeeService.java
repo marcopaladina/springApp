@@ -29,29 +29,30 @@ public class EmployeeService {
         return repo.findAll(pageable);
     }
 
-    public List<Person> getPersons() {
 
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
 
     public Person getPerson(Long id) {
 
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-
+    public void addPerson(Person person) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 
     public void updatePerson(Long id, Person person) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public void deletePerson(long id) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public void addEmployee(Employee employee) {
         repo.save(employee);
     }
 
-    public Employee getEmployee(long id) {
+    public Employee getEmployeeById(long id) {
         log.info("Ricerca persona id= {}", id);
         return repo.findById(id)
                 .orElseThrow(() -> {

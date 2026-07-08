@@ -28,6 +28,7 @@ public class EmployeeController {
 
     @GetMapping("/")
     public ResponseEntity<Page<Employee>> findEmployees(Pageable pageable) {
+        log.info("Find employees with page: {}", pageable);
         log.info("findEmployees -> Vuoto?: {}", service.getEmployee(pageable).isEmpty());
 
         return new ResponseEntity<>(service.getEmployee(pageable), HttpStatus.OK);
@@ -60,7 +61,7 @@ public class EmployeeController {
 
         log.info("findEmployee(@PathVariable int id)= {}", id);
 
-        return service.getEmployee(id);
+        return service.getEmployeeById(id);
     }
 
 
