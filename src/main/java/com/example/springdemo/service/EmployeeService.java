@@ -7,6 +7,8 @@ import com.example.springdemo.exception.ResourceNotFoundException;
 import com.example.springdemo.repository.EmployeeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -22,9 +24,9 @@ public class EmployeeService {
     }
 
 
-    public List<Employee> getEmployee() {
+    public Page<Employee> getEmployee(Pageable pageable) {
 
-        return repo.findAll();
+        return repo.findAll(pageable);
     }
 
     public List<Person> getPersons() {
