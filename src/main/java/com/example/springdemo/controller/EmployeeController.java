@@ -3,7 +3,7 @@ package com.example.springdemo.controller;
 import com.example.springdemo.entity.Employee;
 import com.example.springdemo.service.EmployeeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -11,20 +11,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 
 
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v2")
 public class EmployeeController {
 
-    private static final Logger log = LoggerFactory.getLogger(PersonController.class);
+    private static final Logger log = LoggerFactory.getLogger(EmployeeController.class);
     private final EmployeeService service;
-
-    public EmployeeController(EmployeeService service) {
-        this.service = service;
-    }
 
     @GetMapping("/")
     public ResponseEntity<Page<Employee>> findEmployees(Pageable pageable) {
@@ -72,20 +69,20 @@ public class EmployeeController {
     }
 
 
-//    @PutMapping("/person/{id}")
-//    public void updatePerson(@PathVariable Long id, @RequestBody Person person) throws JsonProcessingException {
-//        log.info("updatePerson(@RequestParam(\"id\") int id, @RequestBody Person person), {}, {}", id, person);
-//
-//        service.updatePerson(id, person);
-//    }
+    @PutMapping("/person/{id}")
+    public void updateEmployee(@PathVariable Long id, @RequestBody Employee employee) throws JsonProcessingException {
+        log.info("updateEmployee(@RequestParam(\"id\") int id, @RequestBody Employee employee), {}, {}", id, employee);
+
+        service.updateEmployee(id, employee);
+    }
 
 
-//    @DeleteMapping("/person/{id}")
-//    public void deletePerson(@PathVariable Long id) {
-//
-//        log.info("deletePerson(@PathVariable int id)= {}", id);
-//
-//        service.deletePerson(id);
-//    }
+    @DeleteMapping("/person/{id}")
+    public void deleteEmployee(@PathVariable Long id) {
+
+        log.info("deleteEmployee(@PathVariable int id)= {}", id);
+
+        service.deleteEmployee(id);
+    }
 
 }

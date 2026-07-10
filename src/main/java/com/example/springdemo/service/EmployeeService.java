@@ -2,26 +2,23 @@ package com.example.springdemo.service;
 
 
 import com.example.springdemo.entity.Employee;
-import com.example.springdemo.entity.Person;
 import com.example.springdemo.exception.ResourceNotFoundException;
 import com.example.springdemo.repository.EmployeeRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 
+
+@RequiredArgsConstructor
 @Service
 public class EmployeeService {
 
     private static final Logger log = LoggerFactory.getLogger(PersonService.class);
     private final EmployeeRepository repo;
-
-    public EmployeeService(EmployeeRepository repo) {
-        this.repo = repo;
-    }
 
 
     public Page<Employee> getEmployee(Pageable pageable) {
@@ -31,24 +28,24 @@ public class EmployeeService {
 
 
 
-    public Person getPerson(Long id) {
+    public Employee getEmployee(Long id) {
 
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public void addPerson(Person person) {
+
+    public void updateEmployee(Long id, Employee employee) {
+
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public void updatePerson(Long id, Person person) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
+    public void deleteEmployee(long id) {
 
-    public void deletePerson(long id) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public void addEmployee(Employee employee) {
+
         repo.save(employee);
     }
 
