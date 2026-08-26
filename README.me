@@ -1,1 +1,111 @@
-simple test for CRUD operation with H2 database.
+Progetto CRUD Utenti con Spring Boot e H2 Database
+Descrizione
+
+Questo progetto è un'applicazione di esempio realizzata con Spring Boot che implementa le operazioni CRUD (Create, Read, Update, Delete) su un'entità Employee/Department/Person, utilizzando H2 come database in-memory per lo sviluppo e i test.
+
+L'obiettivo principale è dimostrare come strutturare un'applicazione Spring Boot con:
+
+Un livello di persistenza basato su Spring Data JPA
+Un database H2 in-memory, comodo per test rapidi senza bisogno di installare un DBMS esterno
+Una suite di test automatici (unit/integration) che verificano il corretto funzionamento delle operazioni CRUD
+Tecnologie utilizzate
+Java (versione consigliata: 17+)
+Spring Boot (Web, Data JPA)
+H2 Database (in-memory)
+Maven o Gradle per la gestione delle dipendenze
+Struttura del progetto
+src
+├── main
+│   ├── java
+│   │   └── com.esempio.progetto
+│   │       ├── controller      # REST controller per esporre gli endpoint CRUD
+│   │       ├── entity           # Entità JPA (es. Department/Employee/Person)
+│   │       ├── repository      # Interfacce Spring Data JPA
+│   │       └── service         # Logica di business
+│   └── resources
+│       └── application.properties  # Configurazione H2 e JPA
+
+Entità principale: Employee/Department/Person
+
+L'entità gestita rappresenta un Utente (o Persona), con attributi tipici come:
+
+Campo	Tipo	Descrizione
+id	Long	Identificativo univoco (auto-generato)
+nome	String	Nome dell'utente
+cognome	String	Cognome dell'utente
+email	String	Indirizzo email (univoco)
+dataNascita	Date	Data di nascita (opzionale)
+Configurazione del database H2
+
+Il file application.properties (o application.yml) contiene la configurazione del database H2:
+
+properties
+# Configurazione H2
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+
+# Console H2 (accessibile su /h2-console)
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+
+# Configurazione JPA/Hibernate
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+Con questa configurazione, il database viene creato automaticamente in memoria all'avvio dell'applicazione e viene distrutto allo spegnimento: perfetto per test e sviluppo rapido, senza persistenza permanente dei dati.
+
+Accesso alla console H2
+
+Con l'applicazione avviata, è possibile accedere alla console web di H2 all'indirizzo:
+
+http://localhost:9092/h2-console
+
+Usando come JDBC URL: jdbc:h2:mem:testdb, username sa e password vuota.
+
+Endpoint REST disponibili
+Metodo	Endpoint	Descrizione
+POST	/api/utenti	Crea un nuovo utente
+GET	/api/utenti	Recupera la lista di tutti gli utenti
+GET	/api/utenti/{id}	Recupera un utente specifico per ID
+PUT	/api/utenti/{id}	Aggiorna i dati di un utente esistente
+DELETE	/api/utenti/{id}	Elimina un utente per ID
+Esempio di richiesta - Creazione utente
+json
+POST /api/utenti
+Content-Type: application/json
+
+{
+  "nome": "Mario",
+  "cognome": "Rossi",
+  "email": "mario.rossi@example.com"
+}
+Esempio di risposta
+json
+{
+  "id": 1,
+  "nome": "Mario",
+  "cognome": "Rossi",
+  "email": "mario.rossi@example.com"
+}
+Come avviare l'applicazione
+Con Maven
+bash
+mvn spring-boot:run
+Con Gradle
+bash
+./gradlew bootRun
+
+L'applicazione sarà disponibile su http://localhost:9092.
+
+
+Note aggiuntive
+Il database H2 essendo in-memory, i dati non persistono tra un riavvio e l'altro dell'applicazione: è pensato esclusivamente per sviluppo e test.
+Per un ambiente di produzione, sostituire la configurazione H2 con un database persistente (es. PostgreSQL, MySQL).
+Si consiglia di mantenere un profilo di test separato (application-test.properties) per isolare la configurazione dei test da quella di sviluppo/produzione.
+Autore
+
+Progetto realizzato a scopo didattico/dimostrativo per l'apprendimento delle operazioni CRUD con Spring Boot e H2 Database.
+
