@@ -5,7 +5,11 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -20,18 +24,33 @@ public class CsvJsonController {
         this.service = service;
     }
 
-    @PostMapping(value = "/csv-to-json", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<byte[]> csvToJson(@RequestParam("file") MultipartFile file) throws IOException {
+    @PostMapping(
+            value = "/csv-to-json",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<byte[]> csvToJson(
+            @RequestParam("file") MultipartFile file) throws IOException {
+
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Il file CSV è vuoto");
+        }
+
         byte[] json = service.convertiCsvInJson(file);
 
         String nome = file.getOriginalFilename() != null
-                ? file.getOriginalFilename().replaceAll("(?i)\\.csv$", "") + ".json"
+                ? file.getOriginalFilename()
+                .replaceAll("(?i)\\.csv$", "") + ".json"
                 : "output.json";
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        ContentDisposition.attachment().filename(nome).build().toString())
+                        ContentDisposition.attachment()
+                                .filename(nome)
+                                .build()
+                                .toString()
+                )
                 .body(json);
     }
 

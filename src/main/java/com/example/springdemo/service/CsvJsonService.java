@@ -13,32 +13,45 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+
 @Service
 public class CsvJsonService {
 
     private final ObjectMapper objectMapper;
-    private final CsvMapper csvMapper = new CsvMapper();
+    private final CsvMapper csvMapper;
 
     public CsvJsonService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+        this.csvMapper = new CsvMapper();
     }
 
-    /** Converte un CSV (con header nella prima riga) in un JSON array di oggetti. */
     public byte[] convertiCsvInJson(MultipartFile file) throws IOException {
+
         if (file == null || file.isEmpty()) {
-            throw new IllegalArgumentException("Il file CSV è vuoto o mancante");
+            throw new IllegalArgumentException(
+                    "Il file CSV è vuoto o mancante"
+            );
         }
 
-        CsvSchema schema = CsvSchema.emptySchema().withHeader();
+        CsvSchema schema = CsvSchema.emptySchema()
+                .withHeader()
+                .withColumnSeparator(';')
+                .withQuoteChar('"');
 
         try (InputStream is = file.getInputStream()) {
-            MappingIterator<Map<String, String>> it = csvMapper
-                    .readerFor(new TypeReference<Map<String, String>>() {})
+
+            MappingIterator<Map<String, String>> iterator = csvMapper
+                    .readerFor(
+                            new TypeReference<Map<String, String>>() {}
+                    )
                     .with(schema)
                     .readValues(is);
 
-            List<Map<String, String>> righe = it.readAll();
-            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(righe);
+            List<Map<String, String>> righe = iterator.readAll();
+
+            return objectMapper
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsBytes(righe);
         }
     }
 }
